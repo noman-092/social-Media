@@ -4,8 +4,39 @@ var router = express.Router();
 const passport = require('passport');
 const localStrategy=require('passport-local')
 const userCollection = require('../models/user.schema');
+const { middle } = require('../middleware/middle');
 
 passport.use(new localStrategy(userCollection.authenticate()));
 
+router.post("/register", async (req,res,next) =>{
+    try{
+        const {username,email,password}  = req.body;
+        // await userCollection.register({username,email},password);
+        const change={username,email};  //non changeable data
+        const fix = password;  //encrypt data
+        await userCollection.register(change,fix);
+        res.redirect("/login");
+    }
+    catch(err){
+        console.log(err.message);
+        res.send(err.message);
+    };
+});
+
+router.post('/login', 
+    passport.authenticate('local',{
+    successRedirect:"/users/profile",
+    failureRedirect:"/login",
+}),(req,res,next)=>{});
+
+router.get('/profile',middle,(req,res,next)=>{
+    res.render('profile', {title: 'SocialMedia | profile',user:req.user});
+});
+
+router.get ('/logout',  (req,res,next)=>{
+    req.logout(()=>{
+        res.redirect('/login');
+    });
+});
 
 module.exports = router;

@@ -5,7 +5,9 @@ const userSchema = new mongoose.Schema({
     email:String,
     password:String, 
    
-});
+},
+{timestamps:true},
+);
 userSchema.plugin(plm);
 const usercollection= mongoose.model('user',userSchema);
 module.exports=usercollection;

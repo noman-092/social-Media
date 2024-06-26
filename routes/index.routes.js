@@ -17,8 +17,19 @@ router.get('/login', function(req, res, next) {
 router.get('/register', function(req, res, next) {
   res.render('register', { title: 'register-page | socialMedia' });
 });
-router.get('/forgot', function(req, res, next) {
-  res.render('forgot', { title: 'forgot-page | socialMedia' });
+router.get('/forgot-email', function(req, res, next) {
+  res.render('forgot', {
+     title: 'forgot-page | socialMedia',
+     user:req.user
+    });
+});
+
+router.get('/verifyOTP/:id', async (req,res,next)=>{
+  res.render('verifyFile', {
+    title:"--",
+     user:req.user,
+      id: req.params.id 
+    });
 });
 
 module.exports = router;

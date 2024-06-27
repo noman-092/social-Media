@@ -26,7 +26,7 @@ router.get('/forgot-email', function(req, res, next) {
 
 router.get('/verifyOTP/:id', async (req,res,next)=>{
   res.render('verifyFile', {
-    title:"--",
+    title:"verify-Otp | social media",
      user:req.user,
       id: req.params.id 
     });

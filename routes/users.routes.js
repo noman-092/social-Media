@@ -6,6 +6,7 @@ const localStrategy = require("passport-local");
 const userCollection = require("../models/user.schema");
 const { middle } = require("../middleware/middle");
 const { sendMail } = require("../utils/send");
+const imagekit = require("../utils/imagekit");
 
 passport.use(new localStrategy(userCollection.authenticate()));
 
@@ -54,29 +55,60 @@ router.post("/send-mail", async (req, res, next) => {
     await sendMail(req, res, user);
   } catch (err) {
     res.send(err.message);
-  };
+  }
 });
 
-router.post('/verifyOTP/:id', async (req,res,next)=>{
-  try{
+router.post("/verifyOTP/:id", async (req, res, next) => {
+  try {
     const userr = await userCollection.findById(req.params.id);
-    if(!userr) 
-      return res.send('user not found');
-    
-    if(userr.otp != req.body.otp) {
-      userr.otp=0;
-    await userr.save()
-    await res.send('invalid otp <a href="/send-mail" </a>');
+    if (!userr) return res.send("user not found");
 
-    };
-    userr.otp=0;
+    if (userr.otp != req.body.otp) {
+      userr.otp = 0;
+      await userr.save();
+      await res.send('invalid otp <a href="/send-mail" </a>');
+    }
+    userr.otp = 0;
     await userr.setPassword(req.body.password);
     await userr.save();
     res.redirect("/login");
-   } catch(err){
-      console.log(err);
-      res.send(err)
-    };
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
+
+router.get("/profile-setting", middle, (req, res, next) => {
+  res.render("profile-setting", {
+    title: "Setting | SocialMedia ",
+    user: req.user,
+  });
+});
+
+router.post("/avatar/:id", middle, async (req, res, next) => {
+  const user = await userCollection.findById(req.params.id);
+  console.log(req.body);
+  try {
+    const { url, fileId, thumbnailUrl } = await imagekit.upload({
+      file: req.files.avatar.data,
+      fileName: user.username,
+      folder: "/avatar",
+    });
+    // Delete the old avatar if it exists
+
+    if (req.user.avatar && req.user.avatar.fileId) {
+      await imagekit.deleteFile(req.user.avatar.fileId);
+    }
+
+    // Update the user's new avatar info
+    user.avatar = { fileId, url, thumbnailUrl };
+    await user.save();
+
+    res.redirect("/users/profile-setting");
+  } catch (err) {
+    res.send(err.message);
+    console.log(err.message);
+  }
 });
 
 module.exports = router;

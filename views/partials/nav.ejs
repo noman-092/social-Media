@@ -1,6 +1,30 @@
-<nav class="flex justify-center gap-x-10 py-10">
-    <a href="/">Home</a>
+<nav class="flex justify-center gap-x-10 py-10  w-[80%] mx-auto">
+    <div class="flex gap-x-10">
+    <% if (user){ %>
+        <a href="/users/profile">Home</a>
+    <% } else{ %>
+        <a href="/">Home</a>
+    <% } %>
     <a href="/about">About</a>
     <a href="/contact">Contact</a>
-    <a href="/login">Login</a>
+    <div class="px-20"></div>
+
+    </div>
+
+
+    <div>
+
+        <% if(user) { %>
+            <a href="/users/profile-setting"><img class="object-cover rounded-full w-[30px] h-[30px]"
+                    src="<%= user.avatar.thumbnailUrl%>" alt="">
+
+            </a>
+
+            <% }else { %>
+                <a class="bg-green-300 px-5 py-2 rounded" href="/login">Login</a>
+
+
+                <% } %>
+
+    </div>
 </nav>

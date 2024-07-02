@@ -9,6 +9,8 @@ var logger = require('morgan');
 const db = require("./models/database");
 db.connect();
 
+// fileUpload
+ const fileUpload = require("express-fileupload")
 
 var userRoutes = require("./routes/users.routes");
 var indexRoutes = require("./routes/index.routes");
@@ -29,6 +31,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// fileUpload
+app.use(fileUpload({
+    limits:{fileSize:50*1024*1024},
+  })
+);
 
 app.use(session({
   secret:process.env.secret,

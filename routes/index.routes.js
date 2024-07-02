@@ -3,19 +3,19 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Homepage | socialMedia' });
+  res.render('index', { title: 'Homepage | socialMedia', user:req.user });
 });
 router.get('/about', function(req, res, next) {
-  res.render('about', { title: 'About-page | socialMedia' });
+  res.render('about', { title: 'About-page | socialMedia', user: req.user });
 });
 router.get('/contact', function(req, res, next) {
-  res.render('contact', { title: 'Contact-page | socialMedia' });
+  res.render('contact', { title: 'Contact-page | socialMedia', user: req.user });
 });
 router.get('/login', function(req, res, next) {
-  res.render('login', { title: 'login-page | socialMedia' });
+  res.render('login', { title: 'login-page | socialMedia', user: req.user });
 });
 router.get('/register', function(req, res, next) {
-  res.render('register', { title: 'register-page | socialMedia' });
+  res.render('register', { title: 'register-page | socialMedia', user: req.user });
 });
 router.get('/forgot-email', function(req, res, next) {
   res.render('forgot', {

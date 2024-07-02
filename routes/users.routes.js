@@ -110,5 +110,16 @@ router.post("/avatar/:id", middle, async (req, res, next) => {
     console.log(err.message);
   }
 });
+ router.post('/update/:id', middle,async(req,res,next)=>{
+   try{
+    const ID = req.params.id;
+    await userCollection.findByIdAndUpdate(ID,req.body);
+    res.redirect("/users/profile-setting");
+  }
+  catch(err){
+    console.log(err);
+    res.send(err.message);
 
+  }
+ })
 module.exports = router;

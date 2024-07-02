@@ -121,5 +121,43 @@ router.post("/avatar/:id", middle, async (req, res, next) => {
     res.send(err.message);
 
   }
- })
+ });
+
+ router.get('/delete/:id', middle, async(req,res,next)=>{
+  try{
+    const user = await userCollection.findByIdAndDelete(req.params.id);
+    await imagekit.deleteFile(user.avatar.fileId);
+    res.redirect('/login')
+  } catch(err){
+    res.send(err.message);
+    console.log(err);
+  };
+
+ });
+
+ router.get('/rest-password/:id', middle, async(req,res,next)=>{
+  res.render('restPassword', {
+    title:'rest-password | socialMedia', 
+    user:req.user
+  });
+
+ });
+
+router.post('/rest-password/:id', middle, async(req,res,next)=>{
+  try{
+    await req.user.changePassword(
+      req.body.oldPassword,
+      req.body.newPassword,
+    );
+    await req.user.save();
+    res.redirect("/users/profile-setting")
+
+  }
+  catch(err){
+    res.send(err.message);
+    console.log(err);
+
+  }
+})
+
 module.exports = router;

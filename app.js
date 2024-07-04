@@ -14,12 +14,14 @@ db.connect();
 
 var userRoutes = require("./routes/users.routes");
 var indexRoutes = require("./routes/index.routes");
+var postRoutes = require("./routes/posts.routes");
 
 var app = express();
 
 const session=require('express-session');
 const passport=require('passport');
 const userCollection = require('./models/user.schema');
+const postCollection = require('./models/posts.schema');
 
 
 // view engine setup
@@ -53,6 +55,7 @@ passport.deserializeUser(userCollection.deserializeUser())
 
 app.use('/', indexRoutes);
 app.use('/users', userRoutes);
+app.use('/posts', postRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -110,54 +110,55 @@ router.post("/avatar/:id", middle, async (req, res, next) => {
     console.log(err.message);
   }
 });
- router.post('/update/:id', middle,async(req,res,next)=>{
-   try{
+router.post("/update/:id", middle, async (req, res, next) => {
+  try {
     const ID = req.params.id;
-    await userCollection.findByIdAndUpdate(ID,req.body);
+    await userCollection.findByIdAndUpdate(ID, req.body);
     res.redirect("/users/profile-setting");
-  }
-  catch(err){
+  } catch (err) {
     console.log(err);
     res.send(err.message);
-
   }
- });
+});
 
- router.get('/delete/:id', middle, async(req,res,next)=>{
-  try{
+router.get("/delete/:id", middle, async (req, res, next) => {
+  try {
     const user = await userCollection.findByIdAndDelete(req.params.id);
     await imagekit.deleteFile(user.avatar.fileId);
-    res.redirect('/login')
-  } catch(err){
+    res.redirect("/login");
+  } catch (err) {
     res.send(err.message);
     console.log(err);
-  };
+  }
+});
 
- });
-
- router.get('/rest-password/:id', middle, async(req,res,next)=>{
-  res.render('restPassword', {
-    title:'rest-password | socialMedia', 
-    user:req.user
+router.get("/rest-password/:id", middle, async (req, res, next) => {
+  res.render("restPassword", {
+    title: "rest-password | socialMedia",
+    user: req.user,
   });
+});
 
- });
-
-router.post('/rest-password/:id', middle, async(req,res,next)=>{
-  try{
-    await req.user.changePassword(
-      req.body.oldPassword,
-      req.body.newPassword,
-    );
+router.post("/rest-password/:id", middle, async (req, res, next) => {
+  try {
+    await req.user.changePassword(req.body.oldPassword, req.body.newPassword);
     await req.user.save();
-    res.redirect("/users/profile-setting")
-
-  }
-  catch(err){
+    res.redirect("/users/profile-setting");
+  } catch (err) {
     res.send(err.message);
     console.log(err);
-
   }
-})
+});
+
+router.get("/messenger", middle, async (req, res, next) => {
+  const users = await userCollection.find({
+    _id: { $ne: req.user._id },
+  });
+  res.render("Message", {
+    title: "chat || Social-media",
+    user: req.user,
+    users,
+  });
+});
 
 module.exports = router;

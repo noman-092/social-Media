@@ -32,7 +32,7 @@ router.post("/create", middle, async function (req, res, next) {
         await newPost.save();
         await req.user.save();
 
-        res.send("Post Created!");
+        res.redirect("/users/profile");
     } catch (error) {
         console.log(error);
         res.send(error.message);
